@@ -6,9 +6,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class ConectApi {
+public class ConnectApi {
 
-    public String ConectarApi (String rota) {
+    public static String ConectarApi (String rota) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(rota))
