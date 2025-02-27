@@ -15,27 +15,11 @@ public class PrincipalSerie {
    private long serialVersionUID;
    @Column(unique = true)
    private String titulo;
-   private Integer temporadas;
+   private Integer temporada;
    private Double avaliacao;
-   @Transient
-   private List<EpisodiosSeries> episodios = new ArrayList<>();
-   public PrincipalSerie() {}
 
-   public long getSerialVersionUID() {
-      return serialVersionUID;
-   }
-
-   public List<EpisodiosSeries> getEpisodios() {
-      return episodios;
-   }
-
-   public void setEpisodios(List<EpisodiosSeries> episodios) {
-      this.episodios = episodios;
-   }
-
-   public void setSerialVersionUID(long serialVersionUID) {
-      this.serialVersionUID = serialVersionUID;
-   }
+   @OneToMany(mappedBy = "principalSerie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+   private List<Episodio> episodios = new ArrayList<>();
 
    @Enumerated(EnumType.STRING)
    private Categoria genero;
@@ -43,9 +27,28 @@ public class PrincipalSerie {
    private String sinopse;
    private String imagem;
 
+   public PrincipalSerie() {}
+
+   public long getSerialVersionUID() {
+      return serialVersionUID;
+   }
+
+   public List<Episodio> getEpisodios() {
+      return episodios;
+   }
+
+   public void setEpisodios(List<Episodio> episodios) {
+      episodios.forEach(e -> e.setPrincipalSerie(this));
+      this.episodios = episodios;
+   }
+
+   public void setSerialVersionUID(long serialVersionUID) {
+      this.serialVersionUID = serialVersionUID;
+   }
+
    public PrincipalSerie(Serie serie) {
       this.titulo = serie.titulo();
-      this.temporadas = serie.temporadas();
+      this.temporada = serie.temporadas();
       this.avaliacao = OptionalDouble.of(Double.valueOf(serie.avaliacao())).orElse(0.0);
       this.genero = Categoria.fromString(serie.genero().split(",")[0].trim());
       this.sinopse = ConsultaGemini.obterTraducao(serie.sinopse()).trim();
@@ -57,10 +60,11 @@ public class PrincipalSerie {
       return
               "Genero=" + genero +
                       ", titulo='" + titulo + '\'' +
-                      ", temporadas=" + temporadas +
+                      ", temporada=" + temporada +
                       ", avaliacao=" + avaliacao +
                       ", sinopse='" + sinopse + '\'' +
-                      ", imagem='" + imagem + '\'';
+                      ", imagem='" + imagem + '\'' +
+                      ", episodios=" + episodios + '\'';
 
    }
 
@@ -72,12 +76,12 @@ public class PrincipalSerie {
       this.titulo = titulo;
    }
 
-   public Integer getTemporadas() {
-      return temporadas;
+   public Integer getTemporada() {
+      return temporada;
    }
 
-   public void setTemporadas(Integer temporadas) {
-      this.temporadas = temporadas;
+   public void setTemporada(Integer temporada) {
+      this.temporada = temporada;
    }
 
    public Double getAvaliacao() {

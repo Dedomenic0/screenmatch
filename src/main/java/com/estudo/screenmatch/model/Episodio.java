@@ -1,14 +1,52 @@
 package com.estudo.screenmatch.model;
 
+import jakarta.persistence.*;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "episodios")
 public class Episodio {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer temporada;
     private String titulo;
     private Integer numeroEpisodio;
     private Double avaliacao;
+
+    public Episodio() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTemporada(Integer temporada) {
+        this.temporada = temporada;
+    }
+
+    public void setNumeroEpisodio(Integer numeroEpisodio) {
+        this.numeroEpisodio = numeroEpisodio;
+    }
+
+    public PrincipalSerie getPrincipalSerie() {
+        return principalSerie;
+    }
+
+    public void setPrincipalSerie(PrincipalSerie principalSerie) {
+        this.principalSerie = principalSerie;
+    }
+
     private LocalDate dataLancamento;
+
+    @ManyToOne
+    private PrincipalSerie principalSerie;
 
     public Episodio(int numeroTemporada, EpisodiosSeries dadosEpisodio) {
         this.temporada = numeroTemporada;
